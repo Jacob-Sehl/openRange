@@ -2,18 +2,39 @@ cmake_minimum_required(VERSION 3.14)
 project(openRange)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Adjust this if you're on Intel (change /opt/homebrew to /usr/local)
-include_directories(/opt/homebrew/include)
-link_directories(/opt/homebrew/lib)
+# Add Homebrew paths for macOS
+if(APPLE)
+    include_directories(/opt/homebrew/include)
+    link_directories(/opt/homebrew/lib)
+endif()
 
-add_executable(openRange main.cpp)
+# Find required packages
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
 
-target_link_libraries(openRange
-    SDL2
-    SDL2_image
-    GLEW
-    "-framework OpenGL"
+# Source files
+set(SOURCES
+    main.cpp
 )
+
+# Add executable
+add_executable(openRange ${SOURCES})
+
+# Link libraries
+if(APPLE)
+    target_link_libraries(openRange
+        SDL2
+        SDL2_image
+        "-framework OpenGL"
+        "-framework GLUT"
+    )
+else()
+    target_link_libraries(openRange
+        ${SDL2_LIBRARIES}
+        ${SDL2_IMAGE_LIBRARIES}
+        ${OPENGL_LIBRARIES}
+    )
+endif()
 
