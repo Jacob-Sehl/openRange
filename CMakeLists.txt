@@ -1,5 +1,8 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.10)
 project(openRange)
+
+# Enable compile commands generation
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -22,6 +25,12 @@ set(SOURCES
 # Add executable
 add_executable(openRange ${SOURCES})
 
+# Include directories
+target_include_directories(openRange PRIVATE 
+    ${SDL2_INCLUDE_DIRS}
+    ${SDL2_IMAGE_INCLUDE_DIRS}
+)
+
 # Link libraries
 if(APPLE)
     target_link_libraries(openRange
@@ -31,7 +40,7 @@ if(APPLE)
         "-framework GLUT"
     )
 else()
-    target_link_libraries(openRange
+    target_link_libraries(openRange PRIVATE
         ${SDL2_LIBRARIES}
         ${SDL2_IMAGE_LIBRARIES}
         ${OPENGL_LIBRARIES}
