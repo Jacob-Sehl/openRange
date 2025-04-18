@@ -54,6 +54,7 @@ struct Camera {
 // Game state
 float rangerX = 0.0f;
 float rangerY = 0.0f;
+bool facingLeft = false;  // Track which way the ranger is facing
 
 // Texture loading helper function
 bool loadTexture(GLuint &textureID, const char *filepath) {
@@ -98,10 +99,18 @@ void renderSprite(GLuint textureID, float x, float y) {
     
     float size = 64.0f;
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 1); glVertex3f(-size/2, 0, -size);
-    glTexCoord2f(1, 1); glVertex3f(size/2, 0, -size);
-    glTexCoord2f(1, 0); glVertex3f(size/2, 0, 0);
-    glTexCoord2f(0, 0); glVertex3f(-size/2, 0, 0);
+    // Flip texture coordinates horizontally if facing left
+    if (facingLeft) {
+        glTexCoord2f(1, 1); glVertex3f(-size/2, 0, -size);
+        glTexCoord2f(0, 1); glVertex3f(size/2, 0, -size);
+        glTexCoord2f(0, 0); glVertex3f(size/2, 0, 0);
+        glTexCoord2f(1, 0); glVertex3f(-size/2, 0, 0);
+    } else {
+        glTexCoord2f(0, 1); glVertex3f(-size/2, 0, -size);
+        glTexCoord2f(1, 1); glVertex3f(size/2, 0, -size);
+        glTexCoord2f(1, 0); glVertex3f(size/2, 0, 0);
+        glTexCoord2f(0, 0); glVertex3f(-size/2, 0, 0);
+    }
     glEnd();
     
     glDisable(GL_TEXTURE_2D);
@@ -152,6 +161,11 @@ void handleMovement(float deltaTime) {
     float angle = -camera.rotationY * M_PI / 180.0f;
     float rotatedX = moveX * cos(angle) - moveY * sin(angle);
     float rotatedY = moveX * sin(angle) + moveY * cos(angle);
+    
+    // Update facing direction based on movement
+    if (rotatedX < 0) facingLeft = true;
+    else if (rotatedX > 0) facingLeft = false;
+    
     rangerX += rotatedX;
     rangerY += rotatedY;
 }
@@ -204,10 +218,10 @@ int main() {
             else if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
                     case SDLK_LEFT:
-                        camera.rotationY -= CAMERA_ROTATION_ANGLE;
+                        camera.rotationY += CAMERA_ROTATION_ANGLE;
                         break;
                     case SDLK_RIGHT:
-                        camera.rotationY += CAMERA_ROTATION_ANGLE;
+                        camera.rotationY -= CAMERA_ROTATION_ANGLE;
                         break;
                     case SDLK_UP:
                         camera.rotationX = std::min(camera.rotationX + CAMERA_TILT_ANGLE, 60.0f);
