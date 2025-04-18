@@ -218,10 +218,10 @@ int main() {
             else if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
                     case SDLK_LEFT:
-                        camera.rotationY += CAMERA_ROTATION_ANGLE;
+                        camera.rotationY -= CAMERA_ROTATION_ANGLE;
                         break;
                     case SDLK_RIGHT:
-                        camera.rotationY -= CAMERA_ROTATION_ANGLE;
+                        camera.rotationY += CAMERA_ROTATION_ANGLE;
                         break;
                     case SDLK_UP:
                         camera.rotationX = std::min(camera.rotationX + CAMERA_TILT_ANGLE, 60.0f);
