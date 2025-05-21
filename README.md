@@ -35,7 +35,7 @@ sudo apt install libsdl2-dev libsdl2-image-dev libglew-dev cmake
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/openRange.git
+git clone https://github.com/Jacob-Sehl/openRange.git
 cd openRange
 ```
 
